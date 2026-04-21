@@ -30,11 +30,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -54,6 +54,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -81,7 +82,7 @@ fun DiaryFormScreen(
     val scrollState = rememberScrollState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    var markerPosition by remember { mutableStateOf<LatLng?>(null) }
+    var diaryPosition by remember { mutableStateOf<LatLng?>(null) }
     var isMapGesturing by remember { mutableStateOf(false) }
 
     var title by remember { mutableStateOf("") }
@@ -90,8 +91,7 @@ fun DiaryFormScreen(
     var existingTimestamp by remember { mutableLongStateOf(0L) }
     var existingFilePath by remember { mutableStateOf<String?>(null) }
 
-
-
+    // 編集の場合、1件日記呼び出し
     LaunchedEffect(diaryId) {
         if (diaryId != null) {
             viewModel.getDiary(diaryId)?.let {
@@ -99,9 +99,11 @@ fun DiaryFormScreen(
                 content = it.content
                 existingTimestamp = it.timestamp
                 existingFilePath = it.filePath
-                markerPosition = LatLng(
-                    // 初期値は東京駅
-                    it.latitude ?: 35.68110358247781, it.longitude ?: 139.76707791348522)
+                diaryPosition = if (it.latitude != null && it.longitude != null) {
+                    LatLng(it.latitude, it.longitude)
+                } else {
+                    null
+                }
             }
         }
     }
@@ -117,8 +119,15 @@ fun DiaryFormScreen(
             TopAppBar(
                 title = {
                     when (diaryId) {
-                        null -> Text(stringResource(R.string.write_diary))
-                        else -> Text(stringResource(R.string.update_diary))
+                        null -> Text(
+                            stringResource(R.string.write_diary),
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        else -> Text(
+                            stringResource(R.string.update_diary),
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 },
                 navigationIcon = {
@@ -128,7 +137,7 @@ fun DiaryFormScreen(
                             contentDescription = stringResource(R.string.back)
                         )
                     }
-                }
+                },
             )
         },
         bottomBar = {
@@ -155,7 +164,7 @@ fun DiaryFormScreen(
                                 viewModel.saveDiary(
                                     title,
                                     content ?: "",
-                                    markerPosition,
+                                    diaryPosition,
                                     selectedImageUri,
                                 ) {
                                     Toast.makeText(
@@ -172,7 +181,7 @@ fun DiaryFormScreen(
                                     diaryId,
                                     title,
                                     content ?: "",
-                                    markerPosition,
+                                    diaryPosition,
                                     imageUri = selectedImageUri,
                                     timestamp = existingTimestamp,
                                     existingFilePath = existingFilePath,
@@ -207,7 +216,7 @@ fun DiaryFormScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // タイトル入力
-            OutlinedTextField(
+            TextField(
                 value = title,
                 onValueChange = { title = it },
                 label = { Text(stringResource(R.string.title)) },
@@ -215,13 +224,13 @@ fun DiaryFormScreen(
                     imeAction = ImeAction.Done
                 ),
                 keyboardActions = KeyboardActions(
-                    onDone = {keyboardController?.hide()}
+                    onDone = { keyboardController?.hide() }
                 ),
                 modifier = Modifier.fillMaxWidth(),
             )
 
             // 本文入力
-            OutlinedTextField(
+            TextField(
                 value = content ?: "",
                 onValueChange = { content = it },
                 label = { Text(stringResource(R.string.today_content)) },
@@ -229,7 +238,7 @@ fun DiaryFormScreen(
                     imeAction = ImeAction.Done
                 ),
                 keyboardActions = KeyboardActions(
-                    onDone = {keyboardController?.hide()}
+                    onDone = { keyboardController?.hide() }
                 ),
                 modifier = Modifier.fillMaxWidth(),
                 minLines = 5
@@ -256,7 +265,7 @@ fun DiaryFormScreen(
                     // 写真を選択したなら
                     selectedImageUri != null -> {
                         AsyncImage(
-                            model = selectedImageUri ?: existingFilePath,
+                            model = selectedImageUri,
                             contentDescription = stringResource(R.string.selected_photo),
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop
@@ -296,13 +305,12 @@ fun DiaryFormScreen(
                 }
             }
             MapSection(
-                selectedPosition = markerPosition,
-                onPositionSelected = { markerPosition = it },
+                selectedPosition = diaryPosition,
+                onPositionSelected = { diaryPosition = it },
                 modifier = Modifier.padding(vertical = 8.dp),
                 onMapTouch = { isMapGesturing = it },
                 context = context,
             )
-
         }
     }
 }
@@ -319,9 +327,13 @@ fun MapSection(
     val markerState = rememberUpdatedMarkerState(
         position = selectedPosition ?: LatLng(35.6812, 139.7671)
     )
+
     // マップカメラ用ステート
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(markerState.position, 12f)
+        val posLatLng = selectedPosition ?: LatLng(35.6812, 139.7671)
+        position = CameraPosition.fromLatLngZoom(
+            posLatLng, 15f
+        )
     }
 
     // 位置情報取得
@@ -357,7 +369,6 @@ fun MapSection(
     LaunchedEffect(selectedPosition) {
         selectedPosition?.let {
             cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(it, 15f))
-            markerState.position = it
         }
     }
     Box(

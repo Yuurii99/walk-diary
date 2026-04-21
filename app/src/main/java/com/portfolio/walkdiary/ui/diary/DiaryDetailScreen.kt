@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -77,7 +78,7 @@ fun DiaryDetailScreen(
                             }
                         }
                     }
-                ) { Text("削除", color = Color.Red) }
+                ) { Text(stringResource(R.string.delete), color = Color.Red) }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) { Text(stringResource(R.string.cancel)) }
@@ -88,7 +89,7 @@ fun DiaryDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("日記詳細") },
+                title = { Text(stringResource(R.string.diary_detail), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(painterResource(R.drawable.arrow_back), stringResource(R.string.back))

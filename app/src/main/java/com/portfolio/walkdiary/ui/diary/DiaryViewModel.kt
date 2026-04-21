@@ -24,21 +24,20 @@ class DiaryViewModel(application: Application) : AndroidViewModel(application) {
         diaryID: Int,
         title: String,
         content: String?,
-        markerPosition: LatLng?,
+        diaryPosition: LatLng?,
         imageUri: Uri?,
         timestamp: Long,
         existingFilePath: String?,
         onSuccess: () -> Unit
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            // 新しい画像が選ばれた場合のみ保存、そうでなければ既存のパスを使用
             val updatedDiary = DiaryEntity(
                 id = diaryID,
                 title = title,
                 content = content,
                 timestamp = timestamp,
-                latitude = markerPosition?.latitude,
-                longitude = markerPosition?.longitude,
+                latitude = diaryPosition?.latitude,
+                longitude = diaryPosition?.longitude,
                 // 新しい画像か既存の画像か判定
                 filePath = imageUri?.let {
                     FileExec.saveUriToFile(
@@ -56,7 +55,7 @@ class DiaryViewModel(application: Application) : AndroidViewModel(application) {
     fun saveDiary(
         title: String,
         content: String,
-        markerPosition: LatLng?,
+        diaryPosition: LatLng?,
         imageUri: Uri?,
         onSuccess: () -> Unit
     ) {
@@ -66,11 +65,10 @@ class DiaryViewModel(application: Application) : AndroidViewModel(application) {
             val diary = DiaryEntity(
                 title = title,
                 content = content,
-                latitude = markerPosition?.latitude,
-                longitude = markerPosition?.longitude,
+                latitude = diaryPosition?.latitude,
+                longitude = diaryPosition?.longitude,
                 filePath = filePath,
                 timestamp = System.currentTimeMillis()
-                // ここに LocationHelper から取得した緯度経度を渡す TODO
             )
             diaryDao.insertDiary(diary)
 

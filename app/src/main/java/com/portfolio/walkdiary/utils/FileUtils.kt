@@ -2,24 +2,31 @@ package com.portfolio.walkdiary.utils
 
 import android.content.Context
 import android.net.Uri
-import com.portfolio.walkdiary.R
+import android.os.Environment
 import java.io.File
+import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.UUID
 
 object FileExec {
     // アプリ内部ストレージに写真をコピー
     fun saveUriToFile(context: Context, uri: Uri): String? {
-        return try {
-            // 1. ファイル名の生成
-            val fileName = context.getString(R.string.file_name_jpg)
-            val destFile = File(context.filesDir, fileName)
+        // 1. ファイル名の生成
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val fileName = "diary_${timeStamp}_${UUID.randomUUID()}.jpg"
 
-            // 2. ストリームを開いてコピー
-            context.contentResolver.openInputStream(uri)?.use { input ->
-                destFile.outputStream().use { output ->
-                    input.copyTo(output)
+        val appStorageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val file = File(appStorageDir, fileName)
+
+        return try {
+            context.contentResolver.openInputStream(uri)?.use { inputStream ->
+                FileOutputStream(file).use { outputStream ->
+                    inputStream.copyTo(outputStream)
                 }
             }
-            destFile.absolutePath // 保存したパスを返す
+            file.absolutePath
         } catch (e: Exception) {
             e.printStackTrace()
             null
