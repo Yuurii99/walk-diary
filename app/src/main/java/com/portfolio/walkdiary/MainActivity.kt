@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
                         DiaryDetailScreen(navController, id)
                     }
                     // 編集画面
-                    composable("diary_detail/{diaryId}") { backStackEntry ->
+                    composable("diary_edit/{diaryId}") { backStackEntry ->
                         val id = backStackEntry.arguments?.getString("diaryId")?.toInt() ?: 0
                         DiaryFormScreen(navController, id)
                     }

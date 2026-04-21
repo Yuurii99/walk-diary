@@ -8,8 +8,8 @@ data class DiaryEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val title: String,
     val content: String?,
-    val filePath: String?,      // 写真のパス（空でもOK）
+    val filePath: String?,
     val timestamp: Long,        // 作成日時
-    val latitude: Double? = null,
-    val longitude: Double? = null
+    val latitude: Double?,
+    val longitude: Double?
 )

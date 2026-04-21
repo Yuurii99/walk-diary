@@ -11,8 +11,8 @@ object DatabaseProvider {
         return instance ?: synchronized(this) {
             return instance ?: Room.databaseBuilder(
                 context.applicationContext,
-                AppDatabase::class.java, "diary_db"
-            ).fallbackToDestructiveMigration(true)
+                AppDatabase::class.java, "diary_db")
+//            ).fallbackToDestructiveMigration(true)
                 .build()
                 .also { instance = it }
         }

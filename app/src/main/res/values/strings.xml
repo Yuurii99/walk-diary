@@ -1,3 +1,31 @@
 <resources>
-    <string name="app_name">TabePhoto</string>
+    <string name="app_name">WalkDiary</string>
+    <string name="diary_delete">日記の削除</string>
+    <string name="diary_delete_alert">この日記を削除してもよろしいですか？</string>
+    <string name="cancel">キャンセル</string>
+    <string name="back">戻る</string>
+    <string name="edit">編集</string>
+    <string name="delete">削除</string>
+    <string name="timestamp">作成日:</string>
+    <string name="yyyy_mm_dd">yyyy/MM/dd</string>
+    <string name="memory_place">思い出の場所</string>
+    <string name="write_diary">日記を書く</string>
+    <string name="update_diary">日記を更新</string>
+    <string name="please_title">タイトルを入力してください</string>
+    <string name="diary_saved">日記を保存しました</string>
+    <string name="diary_updated">日記を更新しました</string>
+    <string name="save">保存</string>
+    <string name="update">更新</string>
+    <string name="title">タイトル</string>
+    <string name="today_content">今日のできごと</string>
+    <string name="selected_photo">選択された写真</string>
+    <string name="select_photo">写真を選ぶ</string>
+    <string name="location_error">位置情報を取得できませんでした</string>
+    <string name="save_current_location">現在地を記録</string>
+    <string name="show_current_location">現在地を表示</string>
+    <string name="use_current_location">現在地を使用</string>
+    <string name="file_name_jpg">DIARY_%1$d.jpg</string>
+    <string name="walk_diary">お散歩日記</string>
+    <string name="add_diary">右下の＋から日記作成しましょう！</string>
+<!--    <string name="loading_diary">思い出を読み込み中...</string>-->
 </resources>

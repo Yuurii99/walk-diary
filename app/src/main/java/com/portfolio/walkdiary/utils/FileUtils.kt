@@ -2,6 +2,7 @@ package com.portfolio.walkdiary.utils
 
 import android.content.Context
 import android.net.Uri
+import com.portfolio.walkdiary.R
 import java.io.File
 
 object FileExec {
@@ -9,7 +10,7 @@ object FileExec {
     fun saveUriToFile(context: Context, uri: Uri): String? {
         return try {
             // 1. ファイル名の生成
-            val fileName = "DIARY_${System.currentTimeMillis()}.jpg"
+            val fileName = context.getString(R.string.file_name_jpg)
             val destFile = File(context.filesDir, fileName)
 
             // 2. ストリームを開いてコピー

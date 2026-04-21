@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.ksp)
+    alias(libs.plugins.secrets.gradle.plugin)
 }
 
 android {
@@ -13,7 +14,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.portfolio.tabephoto"
+        applicationId = "com.portfolio.walkdiary"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -54,6 +55,7 @@ dependencies {
     implementation(libs.androidx.monitor)
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.ui)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -78,4 +80,9 @@ dependencies {
     implementation(libs.play.services.location)
 
     implementation(libs.androidx.navigation.compose)
+
+    implementation(libs.maps.compose)
+    implementation(libs.play.services.location)
+    implementation(libs.maps.compose.utils)
+
 }

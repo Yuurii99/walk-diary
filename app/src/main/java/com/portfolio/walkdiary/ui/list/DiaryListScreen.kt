@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -35,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -55,20 +55,24 @@ fun DiaryListScreen(
     val diaries by viewModel.allDiaries.collectAsState(initial = emptyList())
 
     Scaffold(
-        topBar = { CenterAlignedTopAppBar(title = { Text("お散歩日記") }) },
+        topBar = { CenterAlignedTopAppBar(title = { Text(stringResource(R.string.walk_diary)) }) },
         floatingActionButton = {
             FloatingActionButton(onClick = { navController.navigate("diary_form") }) {
-                Icon(painterResource(R.drawable.add), "日記を書く")
+                Icon(painterResource(R.drawable.add), stringResource(R.string.write_diary))
             }
         }
     ) { padding ->
         if (diaries.isEmpty()) {
-            Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                Text("まだ日記がありません。右下の＋から作成しましょう！")
+            Box(Modifier
+                .fillMaxSize()
+                .padding(padding), contentAlignment = Alignment.Center) {
+                Text(stringResource(R.string.add_diary))
             }
         } else {
             LazyColumn(
-                modifier = Modifier.padding(padding).fillMaxSize(),
+                modifier = Modifier
+                    .padding(padding)
+                    .fillMaxSize(),
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
@@ -137,20 +141,20 @@ fun DiaryItem(
 }
 
 
-@Composable
-fun LoadingAnimation() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // ぐるぐる回るインジケーター
-        CircularProgressIndicator(
-            modifier = Modifier.size(50.dp),
-            color = MaterialTheme.colorScheme.primary,
-            strokeWidth = 4.dp
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text("思い出を読み込み中...", style = MaterialTheme.typography.bodyMedium)
-    }
-}
+//@Composable
+//fun LoadingAnimation() {
+//    Column(
+//        modifier = Modifier.fillMaxSize(),
+//        verticalArrangement = Arrangement.Center,
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//        // ぐるぐる回るインジケーター
+//        CircularProgressIndicator(
+//            modifier = Modifier.size(50.dp),
+//            color = MaterialTheme.colorScheme.primary,
+//            strokeWidth = 4.dp
+//        )
+//        Spacer(modifier = Modifier.height(16.dp))
+//        Text(stringResource(R.string.loading_diary), style = MaterialTheme.typography.bodyMedium)
+//    }
+//}
